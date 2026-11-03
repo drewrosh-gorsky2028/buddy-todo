@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Buddy To-Do</title>
   <meta name="description" content="A cute to-do list with your Google Calendar and a little buddy who reminds you.">
-  <meta name="theme-color" content="#ffe3ec">
+  <meta name="theme-color" content="#e3f3f6">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -15,7 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="Buddy">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -31,15 +31,16 @@
     </header>
 
     <nav class="day-nav" aria-label="Change day">
-      <button id="prevDay" aria-label="Previous day">‹</button>
+      <button id="prevDay" aria-label="Previous day"><span data-icon="chevronLeft"></span></button>
       <button id="todayBtn" class="today-btn">Today</button>
-      <button id="nextDay" aria-label="Next day">›</button>
+      <button id="nextDay" aria-label="Next day"><span data-icon="chevronRight"></span></button>
     </nav>
 
     <section class="buddy-card">
       <div class="buddy" id="buddy" data-mood="idle" data-color="brown" role="button" tabindex="0" aria-label="Your buddy — tap for encouragement">
         <svg viewBox="0 0 200 180" aria-hidden="true">
-          <ellipse class="b-shadow" cx="100" cy="172" rx="58" ry="7"/>
+          <defs><clipPath id="pondClip"><ellipse cx="100" cy="160" rx="90" ry="22"/></clipPath></defs>
+          <ellipse class="b-pond-back" cx="100" cy="160" rx="90" ry="22"/>
           <g class="b-jump">
             <g class="b-squish">
               <g class="b-tail-g"><path class="b-tail ol" d="M136 152 C158 160 180 152 188 132 C191 124 183 120 179 126 C171 140 157 143 138 136 Z"/></g>
@@ -77,11 +78,22 @@
               <path class="b-mouth b-mouth-smile" d="M90 110 Q95 116 100 110 Q105 116 110 110"/>
               <path class="b-mouth-open" d="M91 110 L109 110 Q107 122 100 122 Q93 122 91 110Z"/>
               <ellipse class="b-mouth-o" cx="100" cy="114" rx="4" ry="5"/>
-              <path class="b-heart" d="M100 128 C94 118 80 120 84 132 C86 138 94 144 100 150 C106 144 114 138 116 132 C120 120 106 118 100 128Z"/>
+              <g class="b-rock">
+                <path class="b-rock-body" d="M84 136 C83 125 93 119 102 120 C112 121 118 128 116 137 C115 144 108 148 100 148 C91 148 85 143 84 136Z"/>
+                <ellipse class="b-rock-shine" cx="96" cy="126" rx="5" ry="2.5" transform="rotate(-15 96 126)"/>
+                <circle class="b-rock-dot" cx="106" cy="138" r="1.6"/>
+                <circle class="b-rock-dot" cx="94" cy="140" r="1.2"/>
+              </g>
               <ellipse class="b-arm b-arm-l b-fur ol" cx="82" cy="140" rx="11" ry="9"/>
               <ellipse class="b-arm b-arm-r b-fur ol" cx="118" cy="140" rx="11" ry="9"/>
             </g>
           </g>
+          <g clip-path="url(#pondClip)">
+            <path class="b-wave" d="M-40 154 q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 V200 H-40Z"/>
+            <path class="b-wave-line" d="M-40 162 q12 -4 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0"/>
+          </g>
+          <path class="b-pond-rim" d="M10 160 A90 22 0 0 0 190 160"/>
+          <g class="b-bubbles"><circle cx="40" cy="150" r="4"/><circle cx="164" cy="146" r="3"/><circle cx="150" cy="152" r="2.5"/></g>
           <g class="b-zzz"><text x="156" y="36">z</text><text x="171" y="20">z</text></g>
           <path class="b-sweat" d="M156 60 C152 68 150 72 154 76 C158 79 163 75 161 69 Z"/>
         </svg>
@@ -96,25 +108,25 @@
 
     <section class="card">
       <div class="card-head">
-        <h2>📅 Schedule</h2>
-        <button id="refreshCal" class="chip" hidden aria-label="Refresh calendar">↻ Refresh</button>
+        <h2><span data-icon="calendar"></span>Schedule</h2>
+        <button id="refreshCal" class="chip" hidden aria-label="Refresh calendar"><span data-icon="refresh"></span> Refresh</button>
       </div>
       <ul id="eventList" class="events"></ul>
     </section>
 
     <section class="card">
       <div class="card-head">
-        <h2>🌷 To-do</h2>
+        <h2><span data-icon="list"></span>To-do</h2>
       </div>
       <div class="filters" id="catFilters" role="group" aria-label="Show category"></div>
       <ul id="taskList" class="tasks"></ul>
       <button class="add-row" id="addRow">+ Add a task</button>
     </section>
 
-    <p class="footer-note">Made with 💗 for you</p>
+    <p class="footer-note">Made with <span data-icon="heart"></span> for you</p>
   </div>
 
-  <button class="fab" id="addBtn" aria-label="Add task">+</button>
+  <button class="fab" id="addBtn" aria-label="Add task"><span data-icon="plus"></span></button>
 
   <!-- Add / edit task -->
   <dialog id="taskDialog" class="sheet">
@@ -122,7 +134,7 @@
       <h3 id="taskDialogTitle">New task</h3>
       <label class="field">
         <span>What do you need to do?</span>
-        <input id="taskTitle" required maxlength="140" placeholder="Water the plants 🌱" autocomplete="off">
+        <input id="taskTitle" required maxlength="140" placeholder="Water the plants" autocomplete="off">
       </label>
       <div class="field">
         <span>How important?</span>
@@ -172,7 +184,7 @@
 
       <div class="set-group">
         <h4>Categories</h4>
-        <p class="set-status">Make them yours! Tap a color dot to change it, and edit the emoji or name.</p>
+        <p class="set-status">Make them yours! Tap the color dot or the icon to change them, and edit the name.</p>
         <div id="catEditor"></div>
         <button class="btn ghost" id="addCat">+ Add category</button>
       </div>

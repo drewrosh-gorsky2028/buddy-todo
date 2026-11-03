@@ -9,16 +9,65 @@
   ].join(' ');
   const BUDDY_COLORS = { brown: '#c08a5e', caramel: '#dba26c', chocolate: '#8a5a3c', gray: '#a89f9a', cream: '#ead2ae', pink: '#f2b3bf' };
   const PALETTE = ['#ff8fb1', '#ff9f8a', '#ffbe85', '#f5d76e', '#6fcf9f', '#5cc6c0', '#7cb8f0', '#b39ae8', '#e29be0', '#b0a3b5'];
-  const CATEGORY_VERSION = 2; // bump when DEFAULT_CATEGORIES changes in a way old saves should pick up
+  // Hand-drawn style outline icons (24x24, drawn with the current text color).
+  const ICONS = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    sunset: '<path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 10V3M4.2 10.2l1.4 1.4M1 18h2M21 18h2M18.4 11.6l1.4-1.4M23 22H1M9 6l3-3 3 3"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    calendar: '<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    calendarCheck: '<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M9 15.5l2 2 4-4"/>',
+    list: '<path d="M11 6h10M11 12h10M11 18h10"/><path d="m3 6 1.5 1.5L7.5 4.5M3 12l1.5 1.5 3-3M3 18l1.5 1.5 3-3"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    flame: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5S12.5 5.5 12 3c-2.2 1.9-3 3.9-2 6 .5 1 1 1.6 1 3a2.5 2.5 0 0 1-5 0c-.6.7-1 1.9-1 3a7 7 0 0 0 7 7Z"/>',
+    star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z"/>',
+    sprout: '<path d="M7 21h10M12 21v-9"/><path d="M12 12C12 8 9 6 5 6c0 4 3 6 7 6ZM12 10c0-3 2-5 6-5 0 3-2 5-6 5Z"/>',
+    checkCircle: '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16 9.5"/>',
+    heart: '<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3.2A4.8 4.8 0 0 1 21 11c-2 4.6-9 9-9 9Z"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    refresh: '<path d="M20 11a8 8 0 0 0-14.8-3.5L3 10M3 4v6h6M4 13a8 8 0 0 0 14.8 3.5L21 14M21 20v-6h-6"/>',
+    chevronLeft: '<path d="m15 5-7 7 7 7"/>',
+    chevronRight: '<path d="m9 5 7 7-7 7"/>',
+    sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8Z"/><path d="M19 16l.6 1.6 1.6.6-1.6.6L19 20.4l-.6-1.6-1.6-.6 1.6-.6Z"/>',
+    bubble: '<circle cx="12" cy="12" r="8"/><path d="M8.5 9.5a4 4 0 0 1 3-2.5"/>',
+    book: '<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+    briefcase: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 13h18"/>',
+    home: '<path d="M3 11 12 4l9 7"/><path d="M5 9.5V20h14V9.5M10 20v-5.5h4V20"/>',
+    dumbbell: '<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
+    bath: '<path d="M3 12h18v1.5A5.5 5.5 0 0 1 15.5 19h-7A5.5 5.5 0 0 1 3 13.5Z"/><path d="M6 12V6.5a2.5 2.5 0 0 1 5 0M7 19l-1 2M17 19l1 2"/>',
+    bag: '<path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+    chat: '<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.4-5A8.5 8.5 0 1 1 21 11.5Z"/>',
+    gamepad: '<rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4"/><path d="M15.5 11.5h.01M18 13.5h.01" stroke-width="3"/>',
+    music: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+    paw: '<circle cx="6.5" cy="10" r="2"/><circle cx="10" cy="5.5" r="2"/><circle cx="14" cy="5.5" r="2"/><circle cx="17.5" cy="10" r="2"/><path d="M8 18c0-3 2-5.5 4-5.5s4 2.5 4 5.5a2.3 2.3 0 0 1-4 1.5A2.3 2.3 0 0 1 8 18Z"/>',
+    palette: '<path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5 1-1.5 2-1.5h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8Z"/><path d="M7.5 11h.01M10 7h.01M15 7.5h.01" stroke-width="3"/>',
+    coffee: '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Z"/><path d="M17 10.5h1a2.5 2.5 0 0 1 0 5h-1M8 3v3M12 3v3"/>',
+    cart: '<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12.5h12L22 7H6"/>',
+    shell: '<path d="M12 20c-5 0-8.5-3-8.5-7.5C3.5 7.5 7.5 4 12 4s8.5 3.5 8.5 8.5C20.5 17 17 20 12 20Z"/><path d="M12 20V7M8 19 6.5 9M16 19l1.5-10"/>',
+    plane: '<path d="M21 3 3 10.5l7 2.5 2.5 7Z"/><path d="m10 13 4-4"/>',
+    wave: '<path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+  };
+  const CATEGORY_ICON_CHOICES = ['book', 'briefcase', 'home', 'dumbbell', 'bath', 'bag', 'chat', 'gamepad', 'music', 'paw',
+    'palette', 'coffee', 'cart', 'shell', 'plane', 'sparkle', 'heart', 'star', 'sprout', 'wave'];
+
+  function icon(name, cls) {
+    const s = document.createElement('span');
+    s.className = 'ic' + (cls ? ' ' + cls : '');
+    s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      (ICONS[name] || ICONS.star) + '</svg>';
+    return s;
+  }
+
+  const CATEGORY_VERSION = 3; // bump when DEFAULT_CATEGORIES changes in a way old saves should pick up
   const DEFAULT_CATEGORIES = [
-    { id: 'school', name: 'School', emoji: '📚', color: '#b39ae8' },
-    { id: 'work', name: 'Work', emoji: '💼', color: '#7cb8f0' },
-    { id: 'chores', name: 'Chores', emoji: '🧹', color: '#ffbe85' },
-    { id: 'health', name: 'Health', emoji: '💪', color: '#6fcf9f' },
-    { id: 'selfcare', name: 'Self-care', emoji: '🛁', color: '#e29be0' },
-    { id: 'errands', name: 'Errands', emoji: '🛒', color: '#f5d76e' },
-    { id: 'social', name: 'Social', emoji: '💬', color: '#ff9f8a' },
-    { id: 'fun', name: 'Fun', emoji: '🎮', color: '#ff8fb1' },
+    { id: 'school', name: 'School', icon: 'book', color: '#b39ae8' },
+    { id: 'work', name: 'Work', icon: 'briefcase', color: '#7cb8f0' },
+    { id: 'chores', name: 'Chores', icon: 'home', color: '#ffbe85' },
+    { id: 'health', name: 'Health', icon: 'dumbbell', color: '#6fcf9f' },
+    { id: 'selfcare', name: 'Self-care', icon: 'bath', color: '#e29be0' },
+    { id: 'errands', name: 'Errands', icon: 'bag', color: '#f5d76e' },
+    { id: 'social', name: 'Social', icon: 'chat', color: '#ff9f8a' },
+    { id: 'fun', name: 'Fun', icon: 'gamepad', color: '#ff8fb1' },
   ];
   // Words that make Pebble auto-pick a built-in category. Words match the start of a word,
   // so "clean" also catches "cleaning". Longer phrases win over short ones.
@@ -46,9 +95,9 @@
       'knit', 'bake', 'hobby', 'book', 'anime', 'trip', 'vacation', 'beach', 'hike', 'play', 'fun', 'photo', 'sing'],
   };
   const PRIORITIES = {
-    high: { label: 'High', emoji: '🔥', rank: 0 },
-    medium: { label: 'Medium', emoji: '⭐', rank: 1 },
-    low: { label: 'Low', emoji: '🌱', rank: 2 },
+    high: { label: 'High', icon: 'flame', rank: 0 },
+    medium: { label: 'Medium', icon: 'star', rank: 1 },
+    low: { label: 'Low', icon: 'sprout', rank: 2 },
   };
 
   // ---------- storage ----------
@@ -91,16 +140,25 @@
     filter: null, // category id shown in the to-do list, or null for all
     pick: { category: null, priority: 'medium' }, // choices in the task sheet
     openColorFor: null, // category whose color palette is open in settings
+    openIconFor: null, // category whose icon picker is open in settings
   };
   const saveTasks = () => store.set('tasks', state.tasks);
   const saveSettings = () => store.set('settings', state.settings);
   const savedSettings = store.get('settings', {});
   if (savedSettings.categories && (savedSettings.categoryVersion || 1) < CATEGORY_VERSION) {
-    // Older saves had a different starter set; keep any custom categories and add the new built-ins.
-    const oldDefaults = ['school', 'work', 'home', 'health', 'fun', 'errands'];
-    const custom = state.settings.categories.filter((c) => !oldDefaults.includes(c.id));
-    state.settings.categories = [...JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)), ...custom];
-    for (const t of state.tasks) if (t.category === 'home') t.category = 'chores';
+    const version = savedSettings.categoryVersion || 1;
+    if (version < 2) {
+      // The first starter set was different; keep any custom categories and add the new built-ins.
+      const oldDefaults = ['school', 'work', 'home', 'health', 'fun', 'errands'];
+      const custom = state.settings.categories.filter((c) => !oldDefaults.includes(c.id));
+      state.settings.categories = [...JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)), ...custom];
+      for (const t of state.tasks) if (t.category === 'home') t.category = 'chores';
+    }
+    // Categories used emoji before drawn icons existed.
+    for (const c of state.settings.categories) {
+      if (!c.icon) c.icon = (DEFAULT_CATEGORIES.find((d) => d.id === c.id) || { icon: 'star' }).icon;
+      delete c.emoji;
+    }
     state.settings.categoryVersion = CATEGORY_VERSION;
     saveSettings();
     saveTasks();
@@ -155,11 +213,13 @@
   }
 
   function burst(x, y) {
-    const bits = ['💗', '✨', '🌸', '⭐', '💖', '🌼'];
+    const bits = ['bubble', 'heart', 'sparkle', 'bubble', 'star', 'heart'];
+    const colors = ['var(--accent)', 'var(--coral)', 'var(--mint)'];
     for (let i = 0; i < 12; i++) {
       const a = (Math.PI * 2 * i) / 12 + Math.random() * 0.4;
       const r = 40 + Math.random() * 50;
-      const s = h('span', { class: 'spark' }, bits[i % bits.length]);
+      const s = h('span', { class: 'spark' }, icon(bits[i % bits.length]));
+      s.style.color = colors[i % colors.length];
       s.style.left = x + 'px';
       s.style.top = y + 'px';
       s.style.setProperty('--dx', Math.cos(a) * r + 'px');
@@ -225,15 +285,16 @@
 
   // ---------- buddy ----------
   const CHEERS_DONE = [
-    'Yay! One down! 🎉', 'You\'re doing amazing!', 'Look at you go! ✨', 'Checked! I\'m doing a happy dance 💃',
-    'Nice work, bestie!', 'That\'s my human! 💗', 'Another one bites the dust!',
+    'Yay! One down!', 'You\'re doing amazing!', 'Look at you go!', 'Checked! I\'m doing a happy splash.',
+    'Nice work, bestie!', 'That\'s my human!', 'Another one bites the dust!', 'Otterly fantastic!',
   ];
-  const CHEERS_ALL_DONE = ['ALL DONE?! You\'re a superstar! 🌟', 'Everything\'s checked! Time to relax 🛁', 'Clean sweep! I\'m so proud of you 🥹'];
+  const CHEERS_ALL_DONE = ['ALL DONE?! You\'re a superstar!', 'Everything\'s checked! Time to float and relax.', 'Clean sweep! I\'m so proud of you.'];
   const TAP_LINES = [
-    'Hi hi! 👋', 'You\'ve got this! 💪', 'Drink some water? 💧', 'I believe in you!', 'Remember to stretch 🙆',
-    'Small steps still count 🐾', 'Proud of you for showing up today 💗', 'Hehe, that tickles!', 'Take a deep breath… 🌬️',
+    'Hi hi!', 'You\'ve got this!', 'Drink some water?', 'I believe in you!', 'Remember to stretch!',
+    'Small steps still count.', 'Proud of you for showing up today.', 'Hehe, that tickles!', 'Take a deep breath…',
+    'Want to hold paws? Otters do that so they don\'t drift apart.', 'Just keep swimming!',
   ];
-  const NUDGES = ['You can do it! 💪', 'Let\'s get it done together!', 'I\'m cheering for you!', 'Tiny step, big win ✨'];
+  const NUDGES = ['You can do it!', 'Let\'s get it done together!', 'I\'m cheering for you!', 'Tiny step, big win.'];
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
   let sayTimer;
@@ -256,7 +317,7 @@
         const day = parseKey(state.viewDate).toLocaleDateString([], { weekday: 'long' });
         return { mood: 'idle', text: list.length ? `Planning ahead! ${list.length} thing${list.length > 1 ? 's' : ''} for ${day}.` : `Nothing planned for ${day} yet. Want to add something?` };
       }
-      return { mood: 'idle', text: 'That day already happened! Tap "Today" to come back 🌱' };
+      return { mood: 'idle', text: 'That day already happened! Tap "Today" to swim back.' };
     }
 
     const soon = (state.events[today] || []).find((e) => {
@@ -266,41 +327,43 @@
     });
     if (soon) {
       const mins = Math.round((new Date(soon.start) - now) / 60000);
-      return { mood: 'idle', text: `Heads up! "${soon.title}" starts in ${mins} min ⏰` };
+      return { mood: 'idle', text: `Heads up! "${soon.title}" starts in ${mins} min.` };
     }
 
     const late = left.find((t) => t.time && t.date === today && taskDue(t) < now);
     if (late) return { mood: 'worried', text: `Psst… "${late.title}" was for ${fmtTime(taskDue(late))}. Want to do it now?` };
 
     if (list.length === 0) {
-      if (hr < 12) return { mood: 'idle', text: 'Good morning! What are we doing today? Tap + to add a task 🌱' };
-      if (hr >= 22) return { mood: 'sleepy', text: 'It\'s getting late… rest up, we\'ll plan tomorrow 💤' };
-      return { mood: 'idle', text: 'Free day so far! Add a task whenever you\'re ready ✨' };
+      if (hr < 12) return { mood: 'idle', text: 'Good morning! What are we doing today? Tap + to add a task.' };
+      if (hr >= 22) return { mood: 'sleepy', text: 'It\'s getting late… rest up, we\'ll plan tomorrow.' };
+      return { mood: 'idle', text: 'Free day so far! Add a task whenever you\'re ready.' };
     }
-    if (left.length === 0) return { mood: 'cheer', text: 'You finished everything today! I\'m SO proud 🎉' };
-    if (hr >= 22) return { mood: 'sleepy', text: `Sleepy time… ${left.length} left, but tomorrow-you can help 💤` };
+    if (left.length === 0) return { mood: 'cheer', text: 'You finished everything today! I\'m SO proud!' };
+    if (hr >= 22) return { mood: 'sleepy', text: `Sleepy time… ${left.length} left, but tomorrow-you can help.` };
 
     const next = left[0]; // most important first
-    if (left.length === 1) return { mood: 'idle', text: `Just one left: "${next.title}". Almost there! 💪` };
+    if (left.length === 1) return { mood: 'idle', text: `Just one left: "${next.title}". Almost there!` };
     const urgent = left.filter((t) => t.priority === 'high').length;
-    if (urgent) return { mood: 'idle', text: `${left.length} to go! 🔥 Top priority: "${next.title}"${urgent > 1 ? ` (+${urgent - 1} more important one${urgent > 2 ? 's' : ''})` : ''}` };
+    if (urgent) return { mood: 'idle', text: `${left.length} to go! Top priority: "${next.title}"${urgent > 1 ? ` (+${urgent - 1} more important one${urgent > 2 ? 's' : ''})` : ''}` };
     if (hr < 12) return { mood: 'idle', text: `Morning! ${left.length} things today. Let's start with "${next.title}"!` };
-    return { mood: 'idle', text: `${left.length} to go! Next up: "${next.title}" 🦦` };
+    return { mood: 'idle', text: `${left.length} to go! Next up: "${next.title}"` };
   }
 
   // ---------- rendering ----------
   function greetingFor(hr) {
-    if (hr < 5) return 'Up late? 🌙';
-    if (hr < 12) return 'Good morning ☀️';
-    if (hr < 17) return 'Good afternoon 🌼';
-    if (hr < 22) return 'Good evening 🌆';
-    return 'Good night 🌙';
+    if (hr < 5) return ['Up late?', 'moon'];
+    if (hr < 12) return ['Good morning', 'sun'];
+    if (hr < 17) return ['Good afternoon', 'sun'];
+    if (hr < 22) return ['Good evening', 'sunset'];
+    return ['Good night', 'moon'];
   }
 
   function renderHeader() {
     const isToday = state.viewDate === todayKey();
     const d = parseKey(state.viewDate);
-    $('#greeting').textContent = isToday ? greetingFor(new Date().getHours()) : (state.viewDate > todayKey() ? 'Coming up 🔮' : 'Looking back 📖');
+    const [greet, greetIcon] = isToday ? greetingFor(new Date().getHours())
+      : (state.viewDate > todayKey() ? ['Coming up', 'sparkle'] : ['Looking back', 'book']);
+    $('#greeting').replaceChildren(greet + ' ', icon(greetIcon));
     $('#dateTitle').textContent = d.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
     $('#todayBtn').setAttribute('aria-pressed', String(isToday));
   }
@@ -326,26 +389,26 @@
     const wrap = $('#catFilters');
     const cats = state.settings.categories;
     if (state.filter && !catById(state.filter)) state.filter = null;
-    const chip = (id, label, color) => h('button', {
-      class: 'fchip', 'aria-pressed': String(state.filter === id), style: color ? `--c:${color}` : null,
+    const chip = (id, label, c) => h('button', {
+      class: 'fchip', 'aria-pressed': String(state.filter === id), style: c ? `--c:${c.color}` : null,
       onclick: () => { state.filter = state.filter === id ? null : id; renderTasks(); },
-    }, color ? h('span', { class: 'dot' }) : null, label);
+    }, c ? icon(c.icon, 'cat-ic') : null, label);
     wrap.hidden = !cats.length;
-    wrap.replaceChildren(chip(null, 'All'), ...cats.map((c) => chip(c.id, `${c.emoji} ${c.name}`, c.color)));
+    wrap.replaceChildren(chip(null, 'All'), ...cats.map((c) => chip(c.id, c.name, c)));
   }
 
   function taskRow(t) {
     const today = todayKey();
     const cat = catById(t.category);
     const prio = PRIORITIES[t.priority] || PRIORITIES.medium;
-    const meta = [h('span', { class: t.priority === 'high' ? 'prio-high' : null }, `${prio.emoji} ${prio.label}`)];
-    if (cat) meta.push(h('span', { class: 'cat-pill' }, `${cat.emoji} ${cat.name}`));
+    const meta = [h('span', { class: 'prio prio-' + (t.priority || 'medium') }, icon(prio.icon), ' ', prio.label)];
+    if (cat) meta.push(h('span', { class: 'cat-pill' }, icon(cat.icon), ' ', cat.name));
     if (t.date < today && state.viewDate === today) meta.push(h('span', { class: 'late' }, `from ${shortDay(t.date)}`));
     if (t.time) {
       const due = taskDue(t);
-      meta.push(h('span', { class: !t.done && due < new Date() ? 'late' : null }, `⏰ ${fmtTime(due)}`));
+      meta.push(h('span', { class: !t.done && due < new Date() ? 'late' : null }, icon('clock'), ' ', fmtTime(due)));
     }
-    if (t.onCal) meta.push(h('span', {}, t.gcalId ? '📅 on calendar' : '📅 syncing…'));
+    if (t.onCal) meta.push(h('span', {}, icon('calendarCheck'), t.gcalId ? ' on calendar' : ' syncing…'));
     const li = h('li', { class: 'task' + (t.done ? ' done' : ''), style: cat ? `--cat:${cat.color}` : null });
     const check = h('button', { class: 'check', 'aria-label': t.done ? 'Mark not done' : 'Mark done', onclick: () => toggleTask(t, check) }, checkSvg());
     li.append(
@@ -365,7 +428,7 @@
     if (!list.length) {
       const cat = catById(state.filter);
       ul.replaceChildren(h('li', { class: 'empty', style: 'border:0;display:block' },
-        cat ? `No ${cat.name} tasks here ${cat.emoji}` : 'Nothing here yet — add your first task! 🌱'));
+        cat ? `No ${cat.name} tasks here` : 'Nothing here yet — add your first task!'));
       return;
     }
     // Timed tasks in clock order, everything else from most to least important, finished ones last.
@@ -374,13 +437,13 @@
     const untimed = list.filter((t) => !t.done && !t.time);
     const done = list.filter((t) => t.done);
     const rows = [];
-    const group = (label, items) => {
+    const group = (ic, label, items) => {
       if (!items.length) return;
-      rows.push(h('li', { class: 'group-label' }, label), ...items.map(taskRow));
+      rows.push(h('li', { class: 'group-label' }, icon(ic), ' ', label), ...items.map(taskRow));
     };
-    group('⏰ Timed', timed);
-    group('⭐ Most → least important', untimed);
-    group('✅ Done', done);
+    group('clock', 'Timed', timed);
+    group('flame', 'Most → least important', untimed);
+    group('checkCircle', 'Done', done);
     ul.replaceChildren(...rows);
   }
 
@@ -411,17 +474,17 @@
     const events = state.events[state.viewDate];
     if (!getToken() && !events) {
       ul.replaceChildren(h('li', { class: 'empty', style: 'border:0;display:block' },
-        'Google needs a quick check-in 🔐', h('br'),
+        'Google needs a quick check-in.', h('br'),
         h('button', { class: 'btn primary', onclick: () => googleConnect(false) }, 'Reconnect')));
       return;
     }
     if (!events) {
       ul.replaceChildren(h('li', { class: 'empty', style: 'border:0;display:block' },
-        state.calStatus === 'error' ? 'Couldn\'t load your calendar 😿 Tap refresh to try again.' : 'Loading your schedule…'));
+        state.calStatus === 'error' ? 'Couldn\'t load your calendar. Tap refresh to try again.' : 'Loading your schedule…'));
       return;
     }
     if (!events.length) {
-      ul.replaceChildren(h('li', { class: 'empty', style: 'border:0;display:block' }, 'Nothing on the calendar — free day! 🌈'));
+      ul.replaceChildren(h('li', { class: 'empty', style: 'border:0;display:block' }, 'Nothing on the calendar — free day!'));
       return;
     }
     const now = new Date();
@@ -481,20 +544,21 @@
     $('#taskPrio').replaceChildren(...Object.entries(PRIORITIES).map(([key, p]) =>
       h('button', {
         type: 'button', role: 'radio', 'aria-checked': String(state.pick.priority === key),
+        class: 'prio-' + key,
         onclick: () => { state.pick.priority = key; renderPickers(); },
-      }, `${p.emoji} ${p.label}`)
+      }, icon(p.icon), ' ', p.label)
     ));
-    const pick = (id, label, color) => h('button', {
+    const pick = (id, label, c) => h('button', {
       type: 'button', class: 'pick', role: 'radio', 'aria-checked': String(state.pick.category === id),
-      style: color ? `--c:${color}` : null,
+      style: c ? `--c:${c.color}` : null,
       onclick: () => { state.pick.category = id; state.pick.manual = true; state.pick.auto = false; renderPickers(); },
-    }, label);
+    }, c ? icon(c.icon, 'cat-ic') : null, label);
     $('#taskCats').replaceChildren(
       pick(null, 'None'),
-      ...state.settings.categories.map((c) => pick(c.id, `${c.emoji} ${c.name}`, c.color))
+      ...state.settings.categories.map((c) => pick(c.id, c.name, c))
     );
     const cat = catById(state.pick.category);
-    $('#autoHint').textContent = state.pick.auto && cat ? `✨ ${state.settings.buddyName} picked ${cat.name}` : '';
+    $('#autoHint').replaceChildren(...(state.pick.auto && cat ? [icon('sparkle'), ` ${state.settings.buddyName} picked ${cat.name}`] : []));
   }
 
   $('#taskTitle').addEventListener('input', (e) => {
@@ -522,7 +586,7 @@
       task = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()), created: Date.now(), done: false, gcalId: null, ...fields };
       state.tasks.push(task);
       const remindLater = task.time && taskDue(task) > new Date();
-      say(remindLater ? `Got it! I'll remind you at ${fmtTime(taskDue(task))} ⏰` : 'Added! We\'ve got this 💪', 'happy');
+      say(remindLater ? `Got it! I'll remind you at ${fmtTime(taskDue(task))}.` : 'Added! We\'ve got this.', 'happy');
     }
     saveTasks();
     taskDialog.close();
@@ -556,18 +620,34 @@
         h('button', {
           class: 'cat-color', style: `background:${c.color}`, 'aria-label': `Change ${c.name} color`,
           'aria-expanded': String(state.openColorFor === c.id),
-          onclick: () => { state.openColorFor = state.openColorFor === c.id ? null : c.id; renderCatEditor(); },
+          onclick: () => {
+            state.openColorFor = state.openColorFor === c.id ? null : c.id;
+            state.openIconFor = null;
+            renderCatEditor();
+          },
         }),
-        h('input', {
-          class: 'cat-emoji', value: c.emoji, maxlength: '4', 'aria-label': `${c.name} emoji`,
-          oninput: (e) => { c.emoji = e.target.value.trim(); saveSettings(); renderTasks(); },
-        }),
+        h('button', {
+          class: 'cat-icon', style: `--c:${c.color}`, 'aria-label': `Change ${c.name} icon`,
+          'aria-expanded': String(state.openIconFor === c.id),
+          onclick: () => {
+            state.openIconFor = state.openIconFor === c.id ? null : c.id;
+            state.openColorFor = null;
+            renderCatEditor();
+          },
+        }, icon(c.icon)),
         h('input', {
           class: 'cat-name', value: c.name, maxlength: '20', 'aria-label': 'Category name',
           oninput: (e) => { c.name = e.target.value.trim() || 'Untitled'; saveSettings(); renderTasks(); },
         }),
         h('button', { class: 'cat-del', 'aria-label': `Delete ${c.name}`, onclick: () => deleteCategory(c) }, '×')
       );
+      if (state.openIconFor === c.id) {
+        return h('div', {}, row, h('div', { class: 'icon-grid', role: 'radiogroup', 'aria-label': `${c.name} icon`, style: `--c:${c.color}` },
+          CATEGORY_ICON_CHOICES.map((name) => h('button', {
+            class: 'icon-choice', role: 'radio', 'aria-checked': String(name === c.icon), 'aria-label': name,
+            onclick: () => { c.icon = name; state.openIconFor = null; saveSettings(); renderCatEditor(); renderTasks(); },
+          }, icon(name)))));
+      }
       if (state.openColorFor !== c.id) return row;
       return h('div', {}, row, h('div', { class: 'swatches small', role: 'radiogroup', 'aria-label': `${c.name} color` },
         PALETTE.map((col) => h('button', {
@@ -590,7 +670,12 @@
   $('#addCat').addEventListener('click', () => {
     const cats = state.settings.categories;
     const used = new Set(cats.map((c) => c.color));
-    const c = { id: 'c' + Date.now(), name: 'New category', emoji: '✨', color: PALETTE.find((p) => !used.has(p)) || PALETTE[0] };
+    const usedIcons = new Set(cats.map((x) => x.icon));
+    const c = {
+      id: 'c' + Date.now(), name: 'New category',
+      icon: CATEGORY_ICON_CHOICES.find((i) => !usedIcons.has(i)) || 'star',
+      color: PALETTE.find((p) => !used.has(p)) || PALETTE[0],
+    };
     cats.push(c);
     saveSettings();
     renderCatEditor();
@@ -640,7 +725,7 @@
       gs.textContent = 'Not set up yet. Add your Google Client ID to config.js (README step 2).';
       connect.hidden = true; disconnect.hidden = true;
     } else if (state.settings.googleConnected) {
-      gs.textContent = getToken() ? 'Connected ✅ Your events show up on the home screen.' : 'Connected, but Google wants you to sign in again.';
+      gs.textContent = getToken() ? 'Connected! Your events show up on the home screen.' : 'Connected, but Google wants you to sign in again.';
       connect.hidden = !!getToken(); connect.textContent = 'Reconnect';
       disconnect.hidden = false;
     } else {
@@ -652,7 +737,7 @@
     const inst = $('#installStatus');
     const instBtn = $('#installBtn');
     instBtn.hidden = !deferredInstall;
-    if (isStandalone()) inst.textContent = 'You\'re using the installed app 🎉';
+    if (isStandalone()) inst.textContent = 'You\'re using the installed app!';
     else if (isIOS) inst.textContent = 'In Safari, tap the Share button (square with an arrow), then "Add to Home Screen".';
     else if (deferredInstall) inst.textContent = 'Add Buddy to your home screen like a real app.';
     else inst.textContent = 'In Chrome, open the ⋮ menu and choose "Add to Home screen" or "Install app".';
@@ -671,12 +756,12 @@
     try {
       const p = await Notification.requestPermission();
       if (p === 'granted') {
-        notify(`${state.settings.buddyName} is here! 💗`, 'I\'ll remind you when it\'s time to do things.', 'welcome');
+        notify(`${state.settings.buddyName} is here!`, 'I\'ll remind you when it\'s time to do things.', 'welcome');
       }
     } catch { /* ignore */ }
     renderSettings();
   });
-  $('#testNotif').addEventListener('click', () => notify(`Hi from ${state.settings.buddyName}! 👋`, pick(TAP_LINES), 'test'));
+  $('#testNotif').addEventListener('click', () => notify(`Hi from ${state.settings.buddyName}!`, pick(TAP_LINES), 'test'));
   $('#googleConnect').addEventListener('click', () => googleConnect(false));
   $('#googleDisconnect').addEventListener('click', () => {
     const t = getToken();
@@ -765,7 +850,7 @@
     const silent = sessionStorage.getItem('oauthSilent') === '1';
     if (p.get('access_token')) {
       store.set('gtoken', { token: p.get('access_token'), exp: Date.now() + Number(p.get('expires_in') || 3600) * 1000 });
-      if (!state.settings.googleConnected) setTimeout(() => say('Yay, I can see your calendar now! 📅', 'happy'), 300);
+      if (!state.settings.googleConnected) setTimeout(() => say('Yay, I can see your calendar now!', 'happy'), 300);
       state.settings.googleConnected = true;
       saveSettings();
     } else if (!silent) {
@@ -850,8 +935,8 @@
 
   function taskEventBody(t) {
     const body = {
-      summary: (t.done ? '✓ ' : '') + (catById(t.category) ? catById(t.category).emoji + ' ' : '') + t.title,
-      description: 'Added from Buddy To-Do 🌷',
+      summary: (t.done ? '✓ ' : '') + t.title,
+      description: 'Added from Buddy To-Do' + (catById(t.category) ? ` · ${catById(t.category).name}` : ''),
       transparency: 'transparent',
       extendedProperties: { private: { buddyTask: '1' } },
     };
@@ -888,7 +973,7 @@
       renderTasks();
     } catch (e) {
       if (e.status === 404 || e.status === 410) { task.gcalId = null; saveTasks(); if (task.onCal) return syncTaskToCalendar(task); }
-      toast(e.message === 'auth' ? 'Reconnect Google to sync your calendar' : 'Couldn\'t update your calendar 😿');
+      toast(e.message === 'auth' ? 'Reconnect Google to sync your calendar' : 'Couldn\'t update your calendar');
     }
   }
 
@@ -922,7 +1007,7 @@
       const key = `t:${t.id}:${t.date}:${t.time}`;
       if (now >= due && now - due < 30 * 60000 && !state.notified[key]) {
         state.notified[key] = now; changed = true;
-        notify(`${name}: time for "${t.title}"! ⏰`, pick(NUDGES), key);
+        notify(`${name}: time for "${t.title}"!`, pick(NUDGES), key);
         say(`It's time for "${t.title}"! ${pick(NUDGES)}`, 'happy');
       }
     }
@@ -935,7 +1020,7 @@
       if (now >= start - lead && now < start && !state.notified[key]) {
         state.notified[key] = now; changed = true;
         const mins = Math.max(1, Math.round((start - now) / 60000));
-        notify(`📅 ${e.title} in ${mins} min`, `${name} says: get ready! ${e.location ? '📍 ' + e.location : ''}`.trim(), key);
+        notify(`${e.title} in ${mins} min`, `${name} says: get ready!${e.location ? ' At ' + e.location + '.' : ''}`, key);
       }
     }
 
@@ -956,6 +1041,8 @@
   }
 
   handleOAuthRedirect();
+
+  for (const el of document.querySelectorAll('[data-icon]')) el.replaceWith(icon(el.dataset.icon));
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});

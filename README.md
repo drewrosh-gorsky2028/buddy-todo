@@ -53,8 +53,8 @@ So for anything you really can't miss, flip on the Google Calendar switch when y
 ## Customizing
 
 - ⚙️ **Settings** lets you rename your otter, change its fur color, and pick how early you get event reminders.
-- **Categories:** 8 come built in, each with its own color: 📚 School, 💼 Work, 🧹 Chores, 💪 Health, 🛁 Self-care, 🛒 Errands, 💬 Social and 🎮 Fun. As you type a task, Pebble picks the category for you ("dentist" → Health, "laundry" → Chores). Tap another one if Pebble guessed wrong. In Settings you can rename them, change the emoji, tap the color dot to recolor, or add your own. Pebble auto-picks a category you made when the task contains words from its name. To teach Pebble new words for the built-in ones, edit `CATEGORY_KEYWORDS` in `app.js`.
-- **Importance:** every task is 🔥 High, ⭐ Medium or 🌱 Low. Tasks with a time are listed first under "Timed" in clock order. Everything else is sorted from most to least important.
+- **Categories:** 8 come built in, each with its own color and drawn icon: School, Work, Chores, Health, Self-care, Errands, Social and Fun. As you type a task, Pebble picks the category for you ("dentist" → Health, "laundry" → Chores). Tap another one if Pebble guessed wrong. In Settings you can rename them, tap the icon to pick a different one, tap the color dot to recolor, or add your own. Pebble auto-picks a category you made when the task contains words from its name. To teach Pebble new words for the built-in ones, edit `CATEGORY_KEYWORDS` in `app.js`.
+- **Importance:** every task is High (flame), Medium (star) or Low (sprout). Tasks with a time are listed first under "Timed" in clock order. Everything else is sorted from most to least important.
 - Tap your buddy for encouragement 💕
 - Unfinished tasks from earlier days carry over to today automatically.
 - Tap any task to edit or delete it.

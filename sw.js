@@ -1,6 +1,6 @@
 // Service worker: makes Buddy work offline and shows notifications.
 // Bump the version when you change files so phones pick up the update.
-const CACHE = 'buddy-v3';
+const CACHE = 'buddy-v4';
 const SHELL = [
   './',
   './index.html',
@@ -60,7 +60,7 @@ self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch { data = { body: event.data && event.data.text() }; }
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Buddy 💗', {
+    self.registration.showNotification(data.title || 'Buddy', {
       body: data.body || 'Time to check your to-do list!',
       icon: 'icons/icon-192.png',
       badge: 'icons/badge.png',
