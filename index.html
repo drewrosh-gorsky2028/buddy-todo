@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Buddy To-Do</title>
+  <meta name="description" content="A cute to-do list with your Google Calendar and a little buddy who reminds you.">
+  <meta name="theme-color" content="#ffe3ec">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Buddy">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="greeting" id="greeting"></p>
+        <h1 id="dateTitle"></h1>
+      </div>
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Zm7.43-2.53a7.8 7.8 0 0 0 0-1.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.68-.97L14.6 2.7a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.56c-.6.24-1.17.57-1.68.97l-2.39-.96a.5.5 0 0 0-.6.22L2.81 8.81a.5.5 0 0 0 .12.64l2.03 1.58a7.8 7.8 0 0 0 0 1.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.51.4 1.08.73 1.68.97l.36 2.56c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.56c.6-.24 1.17-.57 1.68-.97l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58Z"/></svg>
+      </button>
+    </header>
+
+    <nav class="day-nav" aria-label="Change day">
+      <button id="prevDay" aria-label="Previous day">‹</button>
+      <button id="todayBtn" class="today-btn">Today</button>
+      <button id="nextDay" aria-label="Next day">›</button>
+    </nav>
+
+    <section class="buddy-card">
+      <div class="buddy" id="buddy" data-mood="idle" data-color="brown" role="button" tabindex="0" aria-label="Your buddy — tap for encouragement">
+        <svg viewBox="0 0 200 180" aria-hidden="true">
+          <ellipse class="b-shadow" cx="100" cy="172" rx="58" ry="7"/>
+          <g class="b-jump">
+            <g class="b-squish">
+              <g class="b-tail-g"><path class="b-tail ol" d="M136 152 C158 160 180 152 188 132 C191 124 183 120 179 126 C171 140 157 143 138 136 Z"/></g>
+              <ellipse class="b-fur ol" cx="100" cy="134" rx="48" ry="32"/>
+              <ellipse class="b-belly" cx="100" cy="144" rx="30" ry="19"/>
+              <ellipse class="b-foot ol" cx="76" cy="164" rx="15" ry="8"/>
+              <ellipse class="b-foot ol" cx="124" cy="164" rx="15" ry="8"/>
+              <circle class="b-fur ol" cx="56" cy="50" r="13"/>
+              <circle class="b-fur ol" cx="144" cy="50" r="13"/>
+              <circle class="b-ear-in" cx="57" cy="51" r="6"/>
+              <circle class="b-ear-in" cx="143" cy="51" r="6"/>
+              <ellipse class="b-fur ol" cx="100" cy="84" rx="52" ry="46"/>
+              <path class="b-belly" d="M66 104 C66 92 82 90 100 95 C118 90 134 92 134 104 C134 120 118 127 100 127 C82 127 66 120 66 104Z"/>
+              <g class="b-eyes-open">
+                <ellipse cx="80" cy="82" rx="7" ry="9"/>
+                <ellipse cx="120" cy="82" rx="7" ry="9"/>
+                <circle class="b-glint" cx="82.5" cy="78.5" r="2.6"/>
+                <circle class="b-glint" cx="122.5" cy="78.5" r="2.6"/>
+              </g>
+              <g class="b-eyes-happy">
+                <path d="M72 85 Q80 75 88 85"/>
+                <path d="M112 85 Q120 75 128 85"/>
+              </g>
+              <g class="b-eyes-sleepy">
+                <path d="M72 83 Q80 89 88 83"/>
+                <path d="M112 83 Q120 89 128 83"/>
+              </g>
+              <ellipse class="b-cheek" cx="64" cy="96" rx="8" ry="5"/>
+              <ellipse class="b-cheek" cx="136" cy="96" rx="8" ry="5"/>
+              <g class="b-whiskers">
+                <path d="M74 106 L57 102"/><path d="M74 112 L57 115"/>
+                <path d="M126 106 L143 102"/><path d="M126 112 L143 115"/>
+              </g>
+              <path class="b-nose" d="M92 98 Q100 94 108 98 Q105 106 100 106 Q95 106 92 98Z"/>
+              <path class="b-mouth b-mouth-smile" d="M90 110 Q95 116 100 110 Q105 116 110 110"/>
+              <path class="b-mouth-open" d="M91 110 L109 110 Q107 122 100 122 Q93 122 91 110Z"/>
+              <ellipse class="b-mouth-o" cx="100" cy="114" rx="4" ry="5"/>
+              <path class="b-heart" d="M100 128 C94 118 80 120 84 132 C86 138 94 144 100 150 C106 144 114 138 116 132 C120 120 106 118 100 128Z"/>
+              <ellipse class="b-arm b-arm-l b-fur ol" cx="82" cy="140" rx="11" ry="9"/>
+              <ellipse class="b-arm b-arm-r b-fur ol" cx="118" cy="140" rx="11" ry="9"/>
+            </g>
+          </g>
+          <g class="b-zzz"><text x="156" y="36">z</text><text x="171" y="20">z</text></g>
+          <path class="b-sweat" d="M156 60 C152 68 150 72 154 76 C158 79 163 75 161 69 Z"/>
+        </svg>
+      </div>
+      <div class="bubble" id="bubble" aria-live="polite"></div>
+    </section>
+
+    <div class="progress" aria-live="polite">
+      <div class="bar"><span id="progressFill"></span></div>
+      <span id="progressText"></span>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>📅 Schedule</h2>
+        <button id="refreshCal" class="chip" hidden aria-label="Refresh calendar">↻ Refresh</button>
+      </div>
+      <ul id="eventList" class="events"></ul>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>🌷 To-do</h2>
+      </div>
+      <div class="filters" id="catFilters" role="group" aria-label="Show category"></div>
+      <ul id="taskList" class="tasks"></ul>
+      <button class="add-row" id="addRow">+ Add a task</button>
+    </section>
+
+    <p class="footer-note">Made with 💗 for you</p>
+  </div>
+
+  <button class="fab" id="addBtn" aria-label="Add task">+</button>
+
+  <!-- Add / edit task -->
+  <dialog id="taskDialog" class="sheet">
+    <form id="taskForm" method="dialog">
+      <h3 id="taskDialogTitle">New task</h3>
+      <label class="field">
+        <span>What do you need to do?</span>
+        <input id="taskTitle" required maxlength="140" placeholder="Water the plants 🌱" autocomplete="off">
+      </label>
+      <div class="field">
+        <span>How important?</span>
+        <div class="seg" id="taskPrio" role="radiogroup" aria-label="Importance"></div>
+      </div>
+      <div class="field">
+        <span>Category <em class="auto-hint" id="autoHint"></em></span>
+        <div class="chips" id="taskCats" role="radiogroup" aria-label="Category"></div>
+      </div>
+      <div class="field-row">
+        <label class="field">
+          <span>Day</span>
+          <input id="taskDate" type="date" required>
+        </label>
+        <label class="field">
+          <span>Remind me at</span>
+          <input id="taskTime" type="time">
+        </label>
+      </div>
+      <label class="toggle" id="calToggleRow">
+        <input type="checkbox" id="taskOnCal">
+        <span class="toggle-ui"></span>
+        <span class="toggle-text">Also put it on my Google Calendar<small id="calHint">Your phone's calendar app will buzz you, even when this app is closed.</small></span>
+      </label>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost danger" id="deleteTask" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" id="cancelTask">Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="settingsDialog" class="sheet">
+    <div class="sheet-scroll">
+      <h3>Settings</h3>
+
+      <div class="set-group">
+        <h4>Your buddy</h4>
+        <label class="field">
+          <span>Name</span>
+          <input id="buddyName" maxlength="20" autocomplete="off">
+        </label>
+        <div class="swatches" id="swatches" role="radiogroup" aria-label="Buddy color"></div>
+      </div>
+
+      <div class="set-group">
+        <h4>Categories</h4>
+        <p class="set-status">Make them yours! Tap a color dot to change it, and edit the emoji or name.</p>
+        <div id="catEditor"></div>
+        <button class="btn ghost" id="addCat">+ Add category</button>
+      </div>
+
+      <div class="set-group">
+        <h4>Notifications</h4>
+        <p class="set-status" id="notifStatus"></p>
+        <div class="btn-row">
+          <button class="btn primary" id="enableNotif">Turn on notifications</button>
+          <button class="btn ghost" id="testNotif">Send a test</button>
+        </div>
+        <label class="field">
+          <span>Remind me about calendar events</span>
+          <select id="remindBefore">
+            <option value="5">5 minutes before</option>
+            <option value="10">10 minutes before</option>
+            <option value="15">15 minutes before</option>
+            <option value="30">30 minutes before</option>
+            <option value="60">1 hour before</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="set-group">
+        <h4>Google Calendar</h4>
+        <p class="set-status" id="googleStatus"></p>
+        <div class="btn-row">
+          <button class="btn primary" id="googleConnect">Connect</button>
+          <button class="btn ghost" id="googleDisconnect">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="set-group">
+        <h4>Put it on your phone</h4>
+        <p class="set-status" id="installStatus"></p>
+        <button class="btn primary" id="installBtn" hidden>Install app</button>
+      </div>
+
+      <div class="sheet-actions">
+        <span class="spacer"></span>
+        <button class="btn primary" id="closeSettings">Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
